@@ -1,22 +1,15 @@
-
-     ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
-    '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
-    |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 
-    '  '--'\|  |' '-' ''  ''  '\ `-' | .'  /   |  ||  '--'  /|  `---.
-     `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'
-    ----------------------------------------------------------------- 
+## Universal Queue
 
 
-Welcome to your Node.js project on Cloud9 IDE!
-
-This chat example showcases how to use `socket.io` with a static `express` server.
+DJ rebuilt on Node.js for various reasons
+Universal Queue is a video/music queueing web application which allows users to create and share rooms in which clients add media to. Connected users can search for and add media to the queue as well as vote to skip currently playing media.
 
 ## Running the server
 
-1) Open `server.js` and start the app by clicking on the "Run" button in the top menu.
+1) Change the port and ip (default is configured for Cloud9)
 
-2) Alternatively you can launch the app from the Terminal:
+2) Launch the app from the Terminal:
 
     $ node server.js
-
-Once the server is running, open the project in the shape of 'https://projectname-username.c9.io/'. As you enter your name, watch the Users list (on the left) update. Once you press Enter or Send, the message is shared with all connected clients.
+    
+## Dependencies
