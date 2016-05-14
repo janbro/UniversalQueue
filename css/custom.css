@@ -1,0 +1,30 @@
+body {
+    text-align: center;
+}
+
+body:after {
+    display: none;
+    content: url();/*add spinner*/
+}
+
+div {
+    display: block;
+}
+
+footer {
+    font-size: 10px;
+    color: #aaa;
+}
+
+.page-container {
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.main-content {
+    margin: 20% auto 0 auto;
+    max-width: 500px;
+}
