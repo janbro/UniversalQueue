@@ -1,5 +1,6 @@
 const http = require('http');
 var fs = require('fs');
+var urlParser = require('url');
 
 const hostname = process.env.IP;
 const port = process.env.PORT;
@@ -26,14 +27,47 @@ const server = http.createServer((req, res) => {
   else if(req.url === "/createRoom") {
     var accessCode = generateAccessCode();
     gameRoomKeys.push(accessCode);
-    res.writeHead(302, {
-      'Location': accessCode + '/host.html'
-      //add other headers here...
-    });
+    res.writeHead(302,
+      {
+        Location: '/host?roomCode=' + accessCode
+      }
+    );
     res.end();
   }
-  else if(req.url === /host/) {
-    
+  else if(req.url.indexOf("host") != -1) {
+    var roomCode = urlParser.parse(req.url,true).query['roomCode'];
+    if(gameRoomKeys.indexOf(roomCode) != -1) {
+      res.end();
+    }
+    else {
+      res.writeHead(302,
+        {
+          Location: '/error.html?reason=Room creation failed!'
+        }
+      );
+      res.end();
+    }
+  }
+  else if(req.url.indexOf("error") != -1) {
+    fs.readFile("error.html", function (err, data) {
+      if(err){
+        res.writeHead(404);
+        res.write("Not Found!");
+      }
+      else {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(fs.readFileSync('error.html'));
+      }
+      res.end();
+     });
+  }
+  else {
+    res.writeHead(302,
+      {
+        Location: '/error.html?reason=Page does not exist!'
+      }
+    );
+    res.end();
   }
 });
 
