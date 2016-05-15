@@ -5,15 +5,18 @@
         <link rel="stylesheet" href="css/normalize.css" type="text/css">
         <link rel="stylesheet" href="css/skeleton.css" type="text/css">
         <link rel="stylesheet" href="css/custom.css" type="text/css">
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/clientfunctions.js"></script>
         <title>Universal Queue</title>
     </head>
-    <body onload="$(document).ready(function(){$('#content-container').load('/includes/mainContent.html');});">
+    <body>
         <div class="page-container">
             <div class="main-content">
                 <h3>Universal Queue</h3>
                 <hr>
-                <div id="content-container">
+                <div class="content-container">
+                    
                 </div>
                 <hr>
             </div>
@@ -24,4 +27,5 @@
             </footer>
         </div>
     </body>
+    <script type="text/javascript" src="/host/host.js"></script>
 </html>

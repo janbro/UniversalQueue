@@ -16,6 +16,13 @@ footer {
     color: #aaa;
 }
 
+input[type="text"] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 280px;
+    height: 48px;
+}
+
 .error-message-container {
     color: red;
 }
@@ -48,6 +55,7 @@ footer {
         color: black;
     }
 }
+
 @keyframes fading {
     from {
         color: red;
