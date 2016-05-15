@@ -5,29 +5,15 @@
         <link rel="stylesheet" href="css/normalize.css" type="text/css">
         <link rel="stylesheet" href="css/skeleton.css" type="text/css">
         <link rel="stylesheet" href="css/custom.css" type="text/css">
+        <script type="text/javascript" src="js/clientfunctions.js"></script>
         <title>Universal Queue</title>
         <script>
-            var getUrlParameter = function getUrlParameter(sParam) {
-                var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                    sURLVariables = sPageURL.split('&'),
-                    sParameterName,
-                    i;
-            
-                for (i = 0; i < sURLVariables.length; i++) {
-                    sParameterName = sURLVariables[i].split('=');
-            
-                    if (sParameterName[0] === sParam) {
-                        return sParameterName[1] === undefined ? true : sParameterName[1];
-                    }
-                }
-            };
-            
-            var setErrorMessage = function() {
-                document.getElementById("error-message").innerHTML = getUrlParameter("reason");
-                setTimeout(function () {
-                    document.getElementById("error-message").className = "fade";
-                },2000);
-            }
+        var setErrorMessage = function() {
+            document.getElementById("error-message").innerHTML = getUrlParameter("reason");
+            setTimeout(function () {
+                document.getElementById("error-message").className = "fade";
+            },2000);
+        }
         </script>
     </head>
     <body onload="setErrorMessage()">
@@ -35,11 +21,13 @@
             <div class="main-content">
                 <h3>Error!</h3>
                 <hr>
-                <div class="button-container">
-                    <button class="create-game" type="submit" onclick="window.location='/';">HOME PAGE</button>
-                </div>
-                <br>
-                <div class="error-message-container" id="error-message">
+                <div class="content-conatiner">
+                    <div class="button-container">
+                        <button class="create-game" type="submit" onclick="window.location='/';">HOME PAGE</button>
+                    </div>
+                    <br>
+                    <div class="error-message-container" id="error-message">
+                    </div>
                 </div>
                 <hr>
             </div>

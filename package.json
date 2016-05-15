@@ -1,10 +1,10 @@
 {
-  "name": "chat-example",
-  "version": "0.0.0",
-  "description": "A chat example to showcase how to use `socket.io` with a static `express` server with `async` for control flow.",
+  "name": "universal-queue",
+  "version": "0.0.1",
+  "description": "A video/music queueing web application which allows users to create and share rooms in which clients add media to. Connected users can search for and add media to the queue as well as vote to skip currently playing media.",
   "main": "server.js",
   "repository": "",
-  "author": "Mostafa Eweda <mo.eweda@gmail.com>",
+  "author": "Alejandro Munoz-McDonald <www.github.com/janbro>",
   "dependencies": {
     "async": "~0.2.8",
     "express": "~3.2.4",
