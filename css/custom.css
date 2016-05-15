@@ -7,6 +7,18 @@ body:after {
     content: url();/*add spinner*/
 }
 
+button.skip-button {
+    background-color:transparent;
+    float: right;
+    display: block;
+}
+
+button.skip-button-grey {
+    background-color:#DDDDDD;
+    float: right;
+    display: block;
+}
+
 div {
     display: block;
 }
@@ -16,15 +28,29 @@ footer {
     color: #aaa;
 }
 
-input[type="text"] {
+input[type="text"].join-field {
     box-sizing: border-box;
     width: 100%;
     max-width: 280px;
     height: 48px;
 }
 
+.active-users-container {
+    float: right;
+    width: 20%;
+}
+
 .error-message-container {
     color: red;
+}
+
+.dummy-player-content {
+    width: 854px;
+    height: 480px;
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
 }
 
 .fade {
@@ -39,12 +65,75 @@ input[type="text"] {
     max-width: 500px;
 }
 
+.main-content-host {
+    margin: 5% auto 0 auto;
+    max-width: 960px;
+}
+
 .page-container {
     position: relative;
     width: 80%;
     max-width: 960px;
     margin: 0 auto;
     padding: 0;
+}
+
+.page-container-host {
+    position: relative;
+    width: 80%;
+    min-width: 1250px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+
+.media-container {
+    float: left;
+    margin-left: -15%;
+}
+
+.search-dummy-container {
+    width:100%;
+    height:100px;
+}
+
+.search-result-container {
+    display:inline-block;
+}
+
+.player-container {
+    width: 854px;
+    height:inherit;
+}
+
+input.highlight {
+    border-color: red;
+}
+
+input.fade {
+    -webkit-animation-duration: 1s;
+    -webkit-animation-name: fading;
+    animation-duration: 1s;
+    animation-name: fading-border;
+}
+
+.queue-button {
+    margin-top:5px;
+}
+
+.video-container {
+	position:relative;
+	padding-bottom:56.25%;
+	padding-top:30px;
+	height:0;
+	overflow:hidden;
+}
+.video-container iframe, .video-container object, .video-container embed {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
 }
 
 @-webkit-keyframes fading {
@@ -62,5 +151,23 @@ input[type="text"] {
     }
     to {
         color: black;
+    }
+}
+
+@-webkit-keyframes fading-border {
+    from {
+        border-color: red;
+    }
+    to {
+        border-color: #D1D1D1;
+    }
+}
+
+@keyframes fading-border {
+    from {
+        border-color: red;
+    }
+    to {
+        border-color: #D1D1D1;
     }
 }

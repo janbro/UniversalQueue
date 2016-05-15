@@ -129,27 +129,39 @@ server.listen(port, hostname, () => {
 });
 
 io.on('connection', function (socket) {
-  console.log("User has connected!");
-  
-  socket.on('disconnect', function(){
+
+  console.log('User ' + socket.id + " has connected!");
+
+  socket.on('disconnect', function() {
     //Disconnect user from room depending on if host or user
-    console.log("User has disconnected!");
+    console.log("User " + socket.id + " has disconnected!");
+    var tempUser = socket.username;
+    if(socket.username&&socket.username.match(/host:[a-z]{6}/)&&roomKeys.indexOf(socket.room)>-1) {
+      if(!socket.connected&&socket.username===tempUser){
+        socket.leave(socket.room);
+        var index = roomKeys.indexOf(socket.room);
+        if (index > -1) {
+          roomKeys.splice(index, 1);
+        }
+    		socket.leave(socket.room);
+    		console.log(socket.room+" has been closed");
+      }
+    }
   });
   
   socket.on('killRoom', function(room) {
-    console.log(roomKeys);
+    console.log(room + " has been killed");
     socket.leave(room);
     var index = roomKeys.indexOf(room);
     if (index > -1) {
       roomKeys.splice(index, 1);
     }
-    console.log(roomKeys);
 		socket.leave(socket.room);
   });
   
   socket.on('hostJoin', function (room) {
     if(roomKeys.indexOf(room) != -1) {
-      socket.username = "host";
+      socket.username = "host:"+socket.room;
       socket.room = room;
       socket.join(room);
       console.log("Host has joined room " + room);
@@ -180,10 +192,18 @@ io.on('connection', function (socket) {
     }
   });
   
-  socket.on('addMedia', function (media,room) {
+  socket.on('addMedia', function (mediaSite,mediaLink,mediaTitle,room) {
     if(roomKeys.indexOf(room) != -1) {
-      socket.broadcast.to(room).emit('addMedia',media);
-      console.log(media + " has been added to room " + room);
+      socket.broadcast.to(room).emit('addMedia',mediaSite,mediaLink,mediaTitle);
+      console.log(mediaTitle + " has been added to room " + room);
     }
+  });
+  
+  socket.on('updateMediaLists', function(mediaSites,mediaLinks,mediaTitles,room) {
+    socket.broadcast.to(room).emit('updateMediaLists',mediaSites,mediaLinks,mediaTitles);
+  });
+  
+  socket.on('skipMedia', function(user,room) {
+    socket.broadcast.to(room).emit('skipMedia',user);
   });
 });

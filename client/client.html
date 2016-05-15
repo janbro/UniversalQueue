@@ -7,17 +7,34 @@
         <link rel="stylesheet" href="css/custom.css" type="text/css">
         <script type="text/javascript" src="/socket.io/socket.io.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    <script type="text/javascript" src="/js/clientfunctions.js"></script>
+        <script type="text/javascript" src="/js/clientfunctions.js"></script>
+        <script src="https://connect.soundcloud.com/sdk/sdk-3.0.0.js"></script>
+        <script src="https://apis.google.com/js/client.js"></script>
         <title>Universal Queue</title>
     </head>
     <body>
         <div class="page-container">
             <div class="main-content">
                 <h3>Universal Queue</h3>
+                <h6>Room Code: <span id="roomCode"></span><br>User: <span id="userName"></span></h6>
                 <hr>
-                <div class="content-container">
-                    
-                </div>
+                <div class="content-container"></div>
+                    <div class="row" style="text-align:left;">
+                        <div id="now-playing" style="float:left;margin-top:7px;">&#9658; Now Playing: </div>
+                        <button class="skip-button" id="skip-button">SKIP</button>
+                        <div class="spacer" style="clear: both;"></div>
+                        <span>Queued:</span>
+                        <ul></ul><span id="queued" style="float:left"></span></ul>
+                    </div>
+                    <div class="row">
+                        <select id="search-site">
+                            <option value="YouTube">YouTube</option>
+                            <option value="Soundcloud">SoundCloud</option>
+                        <select>
+                        <input id="query" placeholder="Search" type="search" required/>
+                        <button id="search-button" class="button-primary" onclick="if($('#query').val().length>0){search()}else{showError('#query');}">Search</button>
+                        <div id="search-container"></div>
+                    </div>
                 <hr>
             </div>
             <footer>

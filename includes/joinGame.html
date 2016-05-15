@@ -1,6 +1,6 @@
-<input autocorrect="off" autocapitalize="off" type="text" id="room-code" name="roomCode" placeholder="Enter a room code">
-<input type="text" id="user-name" name="userName" placeholder="Enter your name">
+<input class="join-field" autocorrect="off" autocapitalize="off" type="text" id="room-code" name="roomCode" placeholder="Enter a room code" required>
+<input class="join-field" type="text" id="user-name" name="userName" placeholder="Enter your name" required>
 <div class="button-container">
-    <input type="submit" value="Join" onclick="window.location='/user?roomCode='+$('#room-code').val()+'&user='+$('#user-name').val();">
+    <input type="submit" value="Join" type="search" onclick="if($('#room-code').val().length==0){showError('#room-code');}else if($('#user-name').val().length==0){showError('#user-name');}else{window.location='/user?roomCode='+$('#room-code').val()+'&user='+$('#user-name').val();}">
     <button class="btn-back" onclick="$(document).ready(function(){$('#content-container').load('/includes/mainContent.html');});">Back</button>
 </div>
