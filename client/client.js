@@ -20,6 +20,11 @@ socket.on('roomClosed', function() {
     location.href = '/error?reason=The room has closed';
 });
 
+socket.on('updateSkipCount', function(skips,skipTarget) {
+  $('#skips').empty();
+  $('#skips').append("SKIPS: " + skips + "/" + skipTarget);
+})
+
 socket.on('updateMediaLists', function(mediaSites,mediaLinks,mediaTitles){
    $('#skip-button').removeClass('skip-button-grey').addClass('skip-button');
    $('#now-playing').empty();
@@ -55,6 +60,6 @@ function showError(identif) {
     },2000);
 }
 
-window.onbeforeunload = function() {
+window.onunload = function() {
     socket.emit('leaveRoom',userID,roomID);
 };

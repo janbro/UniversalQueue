@@ -207,4 +207,8 @@ io.on('connection', function (socket) {
   socket.on('skipMedia', function(user,room) {
     socket.broadcast.to(room).emit('skipMedia',user);
   });
+  
+  socket.on('updateSkipCount', function(skips,skipTarget) {
+    socket.broadcast.to(socket.room).emit('updateSkipCount',skips,skipTarget);
+  });
 });

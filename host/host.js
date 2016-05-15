@@ -104,7 +104,8 @@ function updateActiveUsers() {
 
 function updateSkips() {
   $('#skips').empty();
-  $('#skips').append("SKIPS: " + userSkips.length + "/" + Math.ceil((2/3)*users.length))
+  $('#skips').append("SKIPS: " + userSkips.length + "/" + Math.ceil((2/3)*users.length));
+  socket.emit('updateSkipCount',userSkips.length,Math.ceil((2/3)*users.length));
 }
 
 function clearSkips() {
