@@ -119,13 +119,14 @@ function updateMediaView() {
   $("#player-container").append("<div id='player'></div>");
   switch(mediaSites[0]){
     case "SoundCloud":
-      SC.oEmbed(mediaLinks[0],{auto_play:true,maxheight:166,element:document.getElementById("player")})
-      $('#player').children('iframe').get(0).attr('id','widget');
-      var widget = SC.Widget('widget');
-      widget.bind(SC.Widget.Events.READY, function(player) {
-        widget.bind(SC.Widget.Events.FINISH, function(player) {
-          console.log("finished");
-          nextMedia();
+      SC.oEmbed(mediaLinks[0],{auto_play:true,maxheight:166,element:document.getElementById("player")}).then(function () {
+        document.getElementById("player").getElementsByTagName('iframe')[0].id = 'widget';
+        var widget = SC.Widget('widget');
+        widget.bind(SC.Widget.Events.READY, function(player) {
+          widget.bind(SC.Widget.Events.FINISH, function(player) {
+            console.log("finished");
+            nextMedia();
+          });
         });
       });
       // .then(function(oEmbed){

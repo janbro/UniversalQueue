@@ -16,6 +16,10 @@ socket.on('badRoom', function() {
     location.href = '/error?reason=That room does not exist!';
 });
 
+socket.on('roomClosed', function() {
+    location.href = '/error?reason=The room has closed';
+});
+
 socket.on('updateMediaLists', function(mediaSites,mediaLinks,mediaTitles){
    $('#skip-button').removeClass('skip-button-grey').addClass('skip-button');
    $('#now-playing').empty();

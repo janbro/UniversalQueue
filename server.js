@@ -144,6 +144,7 @@ io.on('connection', function (socket) {
           roomKeys.splice(index, 1);
         }
     		socket.leave(socket.room);
+    		socket.broadcast.to(socket.room).emit('roomClosed');
     		console.log(socket.room+" has been closed");
       }
     }
