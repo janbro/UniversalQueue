@@ -90,7 +90,9 @@ function nextMedia() {
     mediaSites.shift();
     mediaLinks.shift();
     mediaTitles.shift();
+    socket.emit('nextMedia',roomID);
     socket.emit('updateMediaLists',mediaSites,mediaLinks,mediaTitles,roomID);
+    clearSkips();
     updateMediaView();
 }
 
@@ -109,7 +111,7 @@ function updateSkips() {
 }
 
 function clearSkips() {
-  userSkips.empty();
+  userSkips = [];
   updateSkips();
 }
 OE = "";

@@ -199,6 +199,10 @@ io.on('connection', function (socket) {
     }
   });
   
+  socket.on('nextMedia', function(room) {
+    socket.broadcast.to(socket.room).emit('nextMedia');
+  });
+  
   socket.on('addMedia', function (mediaSite,mediaLink,mediaTitle,room) {
     if(roomKeys.indexOf(room) != -1) {
       socket.broadcast.to(room).emit('addMedia',mediaSite,mediaLink,mediaTitle);
