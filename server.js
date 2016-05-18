@@ -136,16 +136,22 @@ io.on('connection', function (socket) {
     //Disconnect user from room depending on if host or user
     console.log("User " + socket.id + " has disconnected!");
     var tempUser = socket.username;
-    if(socket.username&&socket.username.match(/host:[a-z]{6}/)&&roomKeys.indexOf(socket.room)>-1) {
-      if(!socket.connected&&socket.username===tempUser){
-        socket.leave(socket.room);
-        var index = roomKeys.indexOf(socket.room);
-        if (index > -1) {
-          roomKeys.splice(index, 1);
+    if(socket.username && roomKeys.indexOf(socket.room)>-1){
+      if(socket.username.match(/host:[a-z]{6}/)) {
+        if(!socket.connected&&socket.username===tempUser){
+          socket.leave(socket.room);
+          var index = roomKeys.indexOf(socket.room);
+          if (index > -1) {
+            roomKeys.splice(index, 1);
+          }
+      		socket.leave(socket.room);
+      		socket.broadcast.to(socket.room).emit('roomClosed');
+      		console.log(socket.room+" has been closed");
         }
-    		socket.leave(socket.room);
-    		socket.broadcast.to(socket.room).emit('roomClosed');
-    		console.log(socket.room+" has been closed");
+      }
+      else {
+        socket.broadcast.to(socket.room).emit('removeUser',socket.username);
+	    	socket.leave(socket.room);
       }
     }
   });

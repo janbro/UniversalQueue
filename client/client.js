@@ -59,7 +59,3 @@ function showError(identif) {
         },1000);
     },2000);
 }
-
-window.onunload = function() {
-    socket.emit('leaveRoom',userID,roomID);
-};
