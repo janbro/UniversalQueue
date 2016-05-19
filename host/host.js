@@ -7,8 +7,8 @@ var mediaLinks = [];
 var mediaTitles = [];
 //Watch for changes
 
-if( screen.width <= 480 ) {
-    alert("This page is designed for desktop or tablet devices!");
+if (screen.width <= 480) {
+  alert("This page is designed for desktop or tablet devices!");
 }
 window.onbeforeunload = function() {
   return "Leaving this page will close your room!";
@@ -17,56 +17,61 @@ window.onunload = function() {
   //socket.emit('killRoom',roomID);
 };
 
-socket.emit('hostJoin',roomID);
+socket.emit('hostJoin', roomID);
 
 $("#roomCode").append(roomID);
 
-socket.on('addMedia', function(mediaSite,mediaLink,mediaTitle) {
-    mediaSites.push(mediaSite);
-    mediaLinks.push(mediaLink);
-    mediaTitles.push(mediaTitle);
-    console.log(mediaTitle + " was added to the queue");
-    socket.emit('updateMediaLists',mediaSites,mediaLinks,mediaTitles,roomID);
-    if(mediaTitles.length === 1) {
-        updateMediaView();
-    }
+socket.on('addMedia', function(mediaSite, mediaLink, mediaTitle) {
+  mediaSites.push(mediaSite);
+  mediaLinks.push(mediaLink);
+  mediaTitles.push(mediaTitle);
+  //console.log(mediaTitle + " was added to the queue");
+  socket.emit('updateMediaLists', mediaSites, mediaLinks, mediaTitles, roomID);
+  if (mediaTitles.length === 1) {
+    updateMediaView();
+  }
 });
 
-socket.on('updateMediaLists', function(mediaSites,mediaLinks,mediaTitles) {
+socket.on('updateMediaLists', function(mediaSites, mediaLinks, mediaTitles) {
   this.mediaSites = mediaSites;
   this.mediaLinks = mediaLinks;
   this.mediaTitles = mediaTitles;
 });
 
 socket.on('skipMedia', function(user) {
-  if(userSkips.indexOf(user) === -1) {
+  if (userSkips.indexOf(user) === -1) {
     userSkips.push(user);
   }
-  if(userSkips.length>=Math.ceil((2/3)*users.length)) {
-      nextMedia();
+  if (userSkips.length >= Math.ceil((2 / 3) * users.length)) {
+    nextMedia();
   }
   updateSkips();
 });
 
 socket.on('addUser', function(user) {
-    users.push(user);
-    console.log(users);
-    socket.emit('updateMediaLists',mediaSites,mediaLinks,mediaTitles,roomID);
-    updateActiveUsers();
+  users.push(user);
+  //console.log(users);
+  socket.emit('updateMediaLists', mediaSites, mediaLinks, mediaTitles, roomID);
+  updateActiveUsers();
 });
 
-socket.on('removeUser', function(user) {
-    var index = users.indexOf(user);
-    if (index > -1) {
-      users.splice(index, 1);
-    }
-    console.log(users);
+socket.on('removeUser', function(userID, user) {
+  var index = users.indexOf(user);
+  if (index > -1) {
+    users.splice(index, 1);
     updateActiveUsers();
+  }
+  var index = userSkips.indexOf(userID);
+  if (index > -1) {
+    userSkips.splice(index, 1);
+    updateSkips();
+  }
+  //console.log(userSkips);
 });
 
 socket.on('badRoom', function() {
   window.onbeforeunload = function() {
-    
+
   };
   location.href = '/error?reason=Room no longer exists!';
 });
@@ -74,40 +79,40 @@ socket.on('badRoom', function() {
 var player;
 
 function onPlayerReady(event) {
-    event.target.setVolume(100);
-    event.target.playVideo();
-    event.target.setPlaybackQuality('hd720');
+  event.target.setVolume(100);
+  event.target.playVideo();
+  event.target.setPlaybackQuality('hd720');
 }
 
-function onPlayerStateChange(event){
-    if (event.data === 0) {
-      nextMedia();
-    }
+function onPlayerStateChange(event) {
+  if (event.data === 0) {
+    nextMedia();
+  }
 }
 
 function nextMedia() {
-    userSkips = [];
-    mediaSites.shift();
-    mediaLinks.shift();
-    mediaTitles.shift();
-    socket.emit('nextMedia',roomID);
-    socket.emit('updateMediaLists',mediaSites,mediaLinks,mediaTitles,roomID);
-    clearSkips();
-    updateMediaView();
+  userSkips = [];
+  mediaSites.shift();
+  mediaLinks.shift();
+  mediaTitles.shift();
+  socket.emit('nextMedia', roomID);
+  socket.emit('updateMediaLists', mediaSites, mediaLinks, mediaTitles, roomID);
+  clearSkips();
+  updateMediaView();
 }
 
 function updateActiveUsers() {
   $('#active-users').empty();
-  for(var i=0;i<users.length;i++) {
-    $('#active-users').append("<li>"+users[i]+"</li>");
+  for (var i = 0; i < users.length; i++) {
+    $('#active-users').append("<li>" + users[i] + "</li>");
   }
   updateSkips();
 }
 
 function updateSkips() {
   $('#skips').empty();
-  $('#skips').append("SKIPS: " + userSkips.length + "/" + Math.ceil((2/3)*users.length));
-  socket.emit('updateSkipCount',userSkips.length,Math.ceil((2/3)*users.length));
+  $('#skips').append("SKIPS: " + userSkips.length + "/" + Math.ceil((2 / 3) * users.length));
+  socket.emit('updateSkipCount', userSkips.length, Math.ceil((2 / 3) * users.length));
 }
 
 function clearSkips() {
@@ -117,17 +122,21 @@ function clearSkips() {
 OE = "";
 
 function updateMediaView() {
-  $("#player").attr('class','');
+  $("#player").attr('class', '');
   $("#player-container").empty();
   $("#player-container").append("<div id='player'></div>");
-  switch(mediaSites[0]){
+  switch (mediaSites[0]) {
     case "SoundCloud":
-      SC.oEmbed(mediaLinks[0],{auto_play:true,maxheight:166,element:document.getElementById("player")}).then(function () {
+      SC.oEmbed(mediaLinks[0], {
+        auto_play: true,
+        maxheight: 166,
+        element: document.getElementById("player")
+      }).then(function() {
         document.getElementById("player").getElementsByTagName('iframe')[0].id = 'widget';
         var widget = SC.Widget('widget');
         widget.bind(SC.Widget.Events.READY, function(player) {
           widget.bind(SC.Widget.Events.FINISH, function(player) {
-            console.log("finished");
+            //console.log("finished");
             nextMedia();
           });
         });
@@ -147,16 +156,16 @@ function updateMediaView() {
       // });
       break;
     case "YouTube":
-      console.log("YouTube");
+      //console.log("YouTube");
       player = new YT.Player('player', {
-      width: 854,
-      height: 480,
-      style:"display: block;margin-left: auto;margin-right: auto;",
-      videoId: mediaLinks[0],
-      events: {
-        'onReady': onPlayerReady,
-        'onStateChange': onPlayerStateChange,
-      }
+        width: 854,
+        height: 480,
+        style: "display: block;margin-left: auto;margin-right: auto;",
+        videoId: mediaLinks[0],
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange,
+        }
       });
       // document.getElementById('player').setAttribute("class","video-container");
       // $('#player').append('<iframe id="player" style="display: block;margin-left: auto;margin-right: auto;" type="text/html" width="854" height="480" src="http://www.youtube.com/embed/<?php if(file("songs-queued.txt")!=NULL){echo trim(preg_replace('/\s+/', ' ', $songInfo[1]));}?>?enablejsapi=1" frameborder="0"></iframe>');

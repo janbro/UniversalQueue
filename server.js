@@ -150,7 +150,7 @@ io.on('connection', function (socket) {
         }
       }
       else {
-        socket.broadcast.to(socket.room).emit('removeUser',socket.username);
+        socket.broadcast.to(socket.room).emit('removeUser',socket.id.slice(2),socket.username);
 	    	socket.leave(socket.room);
       }
     }
@@ -180,7 +180,7 @@ io.on('connection', function (socket) {
   
   socket.on('leaveRoom', function (user, room) {
     if(roomKeys.indexOf(room) != -1) {
-      socket.broadcast.to(room).emit('removeUser',user);
+      socket.broadcast.to(room).emit('removeUser',socket.id,user);
       console.log(user + " has left room " + room);
 	  	socket.leave(socket.room);
     }
@@ -214,8 +214,8 @@ io.on('connection', function (socket) {
     socket.broadcast.to(room).emit('updateMediaLists',mediaSites,mediaLinks,mediaTitles);
   });
   
-  socket.on('skipMedia', function(user,room) {
-    socket.broadcast.to(room).emit('skipMedia',user);
+  socket.on('skipMedia', function(userID,room) {
+    socket.broadcast.to(room).emit('skipMedia',userID);
   });
   
   socket.on('updateSkipCount', function(skips,skipTarget) {

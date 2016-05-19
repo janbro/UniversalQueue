@@ -1,13 +1,13 @@
 var socket = io();
-var userID = getUrlParameter('user');
+var username = getUrlParameter('user');
 var roomID = getUrlParameter('roomCode');
 
-socket.emit('joinRoom', userID, roomID);
+socket.emit('joinRoom', username, roomID);
 $("#roomCode").append(roomID);
-$("#userName").append(userID);
+$("#userName").append(username);
 
 $('#skip-button').click(function() {
-    socket.emit('skipMedia', userID, roomID);
+    socket.emit('skipMedia', socket.id, roomID);
     $('#skip-button').removeClass('skip-button').addClass('skip-button-grey');
     return false;
 });
@@ -37,7 +37,7 @@ socket.on('updateMediaLists', function(mediaSites, mediaLinks, mediaTitles) {
     else {
         $('#now-playing').append("&#9658; Now Playing: " + mediaTitles[0]);
     }
-    console.log(mediaTitles);
+    //console.log(mediaTitles);
     $('#queued').empty();
     for (var i = 1; i < mediaTitles.length; i++) {
         $('#queued').append("<li>" + mediaTitles[i] + "</li>")
