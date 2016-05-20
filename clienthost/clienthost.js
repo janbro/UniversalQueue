@@ -107,7 +107,12 @@ socket.on('joinInfo', function(seconds, playerState) {
 
 socket.on('seekTo', function(seconds) {
     if(Math.abs(player.getCurrentTime()-seconds)>1){
-        player.seekTo(seconds, true);
+        if(mediaSites[0]==="YouTube") {
+            player.seekTo(seconds, true);
+        }
+        else if(mediaSites[0]==="SoundCloud") {
+            
+        }
     }
 });
 
@@ -186,7 +191,22 @@ function clearSkips() {
     userSkips = [];
     updateSkips();
 }
-OE = "";
+
+function sendToQueue(site, mediaTitle, mediaLink) {
+    socket.emit('addMedia', site, mediaLink, mediaTitle);
+    $('#search-container').empty();
+    $('#query').val('');
+}
+
+function showError(identif) {
+    $(identif).addClass('highlight');
+    setTimeout(function() {
+        $(identif).addClass('fade').removeClass('highlight');
+        setTimeout(function() {
+            $(identif).removeClass('fade');
+        }, 1000);
+    }, 2000);
+}
 
 function updateMediaView() {
     $("#player").attr('class', '');

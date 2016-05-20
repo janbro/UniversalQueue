@@ -11,6 +11,7 @@
         <script src="https://www.youtube.com/player_api"></script>
         <script src="https://connect.soundcloud.com/sdk/sdk-3.0.0.js"></script>
         <script src="https://w.soundcloud.com/player/api.js"></script>
+        <script src="https://apis.google.com/js/client.js"></script>
         <script>
         SC.initialize({
             client_id: '2aa453bf6ef372ab4f7462d76cf01197'
@@ -44,6 +45,13 @@
                         </ul>
                     </div>
                     <div class="spacer" style="clear: both;"></div>
+                    <select id="search-site">
+                        <option value="YouTube">YouTube</option>
+                        <option value="Soundcloud">SoundCloud</option>
+                    <select>
+                    <input id="query" placeholder="Search" type="search" required/>
+                    <button id="search-button" class="button-primary" onclick="if($('#query').val().length>0){search()}else{showError('#query');}">Search</button>
+                    <div id="search-container"></div>
                 </div>
                 <hr>
             </div>

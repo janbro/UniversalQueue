@@ -5,6 +5,7 @@ var userSkips = [];
 var mediaSites = [];
 var mediaLinks = [];
 var mediaTitles = [];
+var intervalSync;
 //Watch for changes
 
 if (screen.width <= 480) {
@@ -13,10 +14,6 @@ if (screen.width <= 480) {
 window.onbeforeunload = function() {
   return "Leaving this page will close your room!";
 };
-
-setInterval(function(){
-  socket.emit('seekTo', player.getCurrentTime());
-},500);
 
 socket.emit('hostJoin', roomID);
 
@@ -146,6 +143,7 @@ function updateMediaView() {
   $("#player").attr('class', '');
   $("#player-container").empty();
   $("#player-container").append("<div id='player'></div>");
+  clearInterval(intervalSync);
   switch (mediaSites[0]) {
     case "SoundCloud":
       SC.oEmbed(mediaLinks[0], {
@@ -191,6 +189,9 @@ function updateMediaView() {
             'iv_load_policy': 3,
         }
       });
+      intervalSync = setInterval(function(){
+        socket.emit('seekTo', player.getCurrentTime());
+      },500);
       // document.getElementById('player').setAttribute("class","video-container");
       // $('#player').append('<iframe id="player" style="display: block;margin-left: auto;margin-right: auto;" type="text/html" width="854" height="480" src="http://www.youtube.com/embed/<?php if(file("songs-queued.txt")!=NULL){echo trim(preg_replace('/\s+/', ' ', $songInfo[1]));}?>?enablejsapi=1" frameborder="0"></iframe>');
       break;
