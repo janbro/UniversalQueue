@@ -86,6 +86,32 @@ app.get("/user", function(req, res) {
   }
 });
 
+app.get("/userhostview", function(req, res) {
+  // add user to room and add to room count
+  var roomCode = urlParser.parse(req.url,true).query['roomCode'];
+  if(roomKeys.indexOf(roomCode) != -1) {
+    fs.readFile("./clienthost/clienthost.html", function (err, data) {
+      if(err){
+        res.writeHead(404);
+        res.write("Not Found!");
+      }
+      else {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(fs.readFileSync('./clienthost/clienthost.html'));
+      }
+      res.end();
+    });
+  }
+  else {
+    res.writeHead(302,
+      {
+        Location: '/error?reason=Room does not exist!'
+      }
+    );
+    res.end();
+  }
+});
+
 app.get("/error", function(req, res) {
   fs.readFile("error.html", function (err, data) {
     if(err){
@@ -178,12 +204,8 @@ io.on('connection', function (socket) {
     }
   });
   
-  socket.on('leaveRoom', function (user, room) {
-    if(roomKeys.indexOf(room) != -1) {
-      socket.broadcast.to(room).emit('removeUser',socket.id,user);
-      console.log(user + " has left room " + room);
-	  	socket.leave(socket.room);
-    }
+  socket.on('leaveRoom', function(room) {
+    console.log("DEPRECATED");
   });
   
   socket.on('joinRoom', function (user, room) {
@@ -199,26 +221,59 @@ io.on('connection', function (socket) {
     }
   });
   
-  socket.on('nextMedia', function(room) {
-    socket.broadcast.to(socket.room).emit('nextMedia');
-  });
-  
-  socket.on('addMedia', function (mediaSite,mediaLink,mediaTitle,room) {
+  socket.on('joinRoomHostView', function (user, room) {
     if(roomKeys.indexOf(room) != -1) {
-      socket.broadcast.to(room).emit('addMedia',mediaSite,mediaLink,mediaTitle);
-      console.log(mediaTitle + " has been added to room " + room);
+      socket.username = user;
+      socket.room = room;
+      socket.join(room);
+      socket.broadcast.to(room).emit('addUser',user);
+      console.log(user + " has joined room " + room);
+    }
+    else {
+      socket.emit('badRoom');
     }
   });
   
-  socket.on('updateMediaLists', function(mediaSites,mediaLinks,mediaTitles,room) {
-    socket.broadcast.to(room).emit('updateMediaLists',mediaSites,mediaLinks,mediaTitles);
+  socket.on('nextMedia', function() {
+    socket.broadcast.to(socket.room).emit('nextMedia');
   });
   
-  socket.on('skipMedia', function(userID,room) {
-    socket.broadcast.to(room).emit('skipMedia',userID);
+  socket.on('addMedia', function (mediaSite,mediaLink,mediaTitle) {
+    if(roomKeys.indexOf(socket.room) != -1) {
+      socket.broadcast.to(socket.room).emit('addMedia',mediaSite,mediaLink,mediaTitle);
+      console.log(mediaTitle + " has been added to room " + socket.room);
+    }
+  });
+  
+  socket.on('pauseMedia', function(room) {
+    socket.broadcast.to(socket.room).emit('pauseMedia');
+  });
+  
+  socket.on('playMedia', function() {
+    socket.broadcast.to(socket.room).emit('playMedia');
+  });
+  
+  socket.on('updateMediaLists', function(mediaSites,mediaLinks,mediaTitles) {
+    socket.broadcast.to(socket.room).emit('updateMediaLists',mediaSites,mediaLinks,mediaTitles);
+  });
+  
+  socket.on('skipMedia', function(userID) {
+    socket.broadcast.to(socket.room).emit('skipMedia',userID);
   });
   
   socket.on('updateSkipCount', function(skips,skipTarget) {
     socket.broadcast.to(socket.room).emit('updateSkipCount',skips,skipTarget);
+  });
+  
+  socket.on('seekTo', function(seconds) {
+    socket.broadcast.to(socket.room).emit('seekTo',seconds);
+  });
+  
+  socket.on('joinInfo', function(seconds,playerState) {
+    socket.broadcast.to(socket.room).emit('joinInfo',seconds,playerState);
+  });
+  
+  socket.on('updateActiveUsers', function(users){
+    socket.broadcast.to(socket.room).emit('updateActiveUsers',users);
   });
 });

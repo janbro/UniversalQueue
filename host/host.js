@@ -13,9 +13,10 @@ if (screen.width <= 480) {
 window.onbeforeunload = function() {
   return "Leaving this page will close your room!";
 };
-window.onunload = function() {
-  //socket.emit('killRoom',roomID);
-};
+
+setInterval(function(){
+  socket.emit('seekTo', player.getCurrentTime());
+},500);
 
 socket.emit('hostJoin', roomID);
 
@@ -26,7 +27,7 @@ socket.on('addMedia', function(mediaSite, mediaLink, mediaTitle) {
   mediaLinks.push(mediaLink);
   mediaTitles.push(mediaTitle);
   //console.log(mediaTitle + " was added to the queue");
-  socket.emit('updateMediaLists', mediaSites, mediaLinks, mediaTitles, roomID);
+  socket.emit('updateMediaLists', mediaSites, mediaLinks, mediaTitles);
   if (mediaTitles.length === 1) {
     updateMediaView();
   }
@@ -51,8 +52,13 @@ socket.on('skipMedia', function(user) {
 socket.on('addUser', function(user) {
   users.push(user);
   //console.log(users);
-  socket.emit('updateMediaLists', mediaSites, mediaLinks, mediaTitles, roomID);
+  socket.emit('updateMediaLists', mediaSites, mediaLinks, mediaTitles);
+  if (mediaSites[0] === "YouTube") {
+    socket.emit('joinInfo', player.getCurrentTime(), player.getPlayerState());
+  }
+  console.log(mediaLinks);
   updateActiveUsers();
+  socket.emit('updateActiveUsers', users);
 });
 
 socket.on('removeUser', function(userID, user) {
@@ -76,18 +82,33 @@ socket.on('badRoom', function() {
   location.href = '/error?reason=Room no longer exists!';
 });
 
+socket.on('pauseMedia', function() {
+  player.pauseVideo();
+});
+
+socket.on('playMedia', function() {
+  player.playVideo();
+});
+
 var player;
 
 function onPlayerReady(event) {
   event.target.setVolume(100);
   event.target.playVideo();
-  event.target.setPlaybackQuality('hd720');
+  event.target.setPlaybackQuality('default');
 }
 
 function onPlayerStateChange(event) {
   if (event.data === 0) {
     nextMedia();
   }
+  else if (event.data === 1) {
+    socket.emit('playMedia');
+  }
+  else if (event.data === 2 || event.data === 3) {
+    socket.emit('pauseMedia');
+  }
+  socket.emit('seekTo', player.getCurrentTime());
 }
 
 function nextMedia() {
@@ -95,8 +116,8 @@ function nextMedia() {
   mediaSites.shift();
   mediaLinks.shift();
   mediaTitles.shift();
-  socket.emit('nextMedia', roomID);
-  socket.emit('updateMediaLists', mediaSites, mediaLinks, mediaTitles, roomID);
+  socket.emit('nextMedia');
+  socket.emit('updateMediaLists', mediaSites, mediaLinks, mediaTitles);
   clearSkips();
   updateMediaView();
 }
@@ -165,6 +186,9 @@ function updateMediaView() {
         events: {
           'onReady': onPlayerReady,
           'onStateChange': onPlayerStateChange,
+        },
+        playerVars: {
+            'iv_load_policy': 3,
         }
       });
       // document.getElementById('player').setAttribute("class","video-container");

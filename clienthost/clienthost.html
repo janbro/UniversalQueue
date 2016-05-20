@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="css/normalize.css" type="text/css">
+        <link rel="stylesheet" href="css/skeleton.css" type="text/css">
+        <link rel="stylesheet" href="css/custom.css" type="text/css">
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script type="text/javascript" src="/js/clientfunctions.js"></script>
+        <script src="https://www.youtube.com/player_api"></script>
+        <script src="https://connect.soundcloud.com/sdk/sdk-3.0.0.js"></script>
+        <script src="https://w.soundcloud.com/player/api.js"></script>
+        <script>
+        SC.initialize({
+            client_id: '2aa453bf6ef372ab4f7462d76cf01197'
+         });
+         </script>
+        <title>Universal Queue</title>
+    </head>
+    <body onload="updateMediaView();">
+        <div class="page-container-host">
+            <div class="main-content-host">
+                <h3>Universal Queue</h3>
+                <h6>Room Code: <span id="roomCode"></span><br>User: <span id="userName"></span></h6>
+                <hr>
+                <div class="content-container">
+                    <div class="media-container">
+                        <div class="player-container" id="player-container">
+                            <div class="dummy-player-content" id="player"></div>
+                        </div>
+                        <div class="spacer" style="clear: both;height:20px" ></div>
+                        <div id="skips" style="float:left;">
+                            SKIPS: 0/0
+                        </div>
+                        <button id="skip-button" style="float:right;" >SKIP</button>
+                    </div>
+                    <div class="active-users-container">
+                        <b>Active Users</b>
+                        <hr>
+                        <ul>
+                            <div id="active-users">
+                            </div>
+                        </ul>
+                    </div>
+                    <div class="spacer" style="clear: both;"></div>
+                </div>
+                <hr>
+            </div>
+            <footer>
+                Universal Queue made by Alejandro Munoz-McDonald
+                <br>
+                <a href="https://www.github.com/janbro">https://www.github.com/janbro</a>
+            </footer>
+    </body>
+    <script type="text/javascript" src="/clienthost/clienthost.js"></script>
+</html>

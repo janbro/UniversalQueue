@@ -7,7 +7,7 @@ $("#roomCode").append(roomID);
 $("#userName").append(username);
 
 $('#skip-button').click(function() {
-    socket.emit('skipMedia', socket.id, roomID);
+    socket.emit('skipMedia', socket.id);
     $('#skip-button').removeClass('skip-button').addClass('skip-button-grey');
     return false;
 });
@@ -45,7 +45,7 @@ socket.on('updateMediaLists', function(mediaSites, mediaLinks, mediaTitles) {
 });
 
 function sendToQueue(site, mediaTitle, mediaLink) {
-    socket.emit('addMedia', site, mediaLink, mediaTitle, roomID);
+    socket.emit('addMedia', site, mediaLink, mediaTitle);
     $('#search-container').empty();
     $('#query').val('');
 }
