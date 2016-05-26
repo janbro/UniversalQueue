@@ -106,13 +106,13 @@ socket.on('joinInfo', function(seconds, playerState) {
 });
 
 socket.on('seekTo', function(seconds) {
-    if(Math.abs(player.getCurrentTime()-seconds)>1){
-        if(mediaSites[0]==="YouTube") {
+    if(mediaSites[0]==="YouTube" && player.getPlayerState() !== 2) {
+        if(Math.abs(player.getCurrentTime()-seconds)>1){
             player.seekTo(seconds, true);
         }
-        else if(mediaSites[0]==="SoundCloud") {
-            
-        }
+    }
+    else if(mediaSites[0]==="SoundCloud") {
+        
     }
 });
 
@@ -167,9 +167,9 @@ function onPlayerStateChange(event) {
         }
     }
     else if (event.data === 2) {
-        if (vidPlayState) {
-            player.playVideo();
-        }
+        // if (vidPlayState) {
+        //     player.playVideo();
+        // }
     }
 }
 
