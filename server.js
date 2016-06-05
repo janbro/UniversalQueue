@@ -242,6 +242,7 @@ io.on('connection', function (socket) {
     if(roomKeys.indexOf(socket.room) != -1) {
       socket.broadcast.to(socket.room).emit('addMedia',mediaSite,mediaLink,mediaTitle);
       console.log(mediaTitle + " has been added to room " + socket.room);
+      socket.emit('addMedia',mediaSite,mediaLink,mediaTitle);
     }
   });
   
