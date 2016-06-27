@@ -16,6 +16,7 @@ var isHost = username.match(/Host/);
 if (screen.width <= 480) {
   alert("This page is designed for desktop or tablet devices!");
 }
+
 window.onbeforeunload = function() {
   if (isHost) {
     return "Leaving this page will close your room!";
@@ -30,6 +31,7 @@ else {
   socket.emit('joinRoomHostView', username, roomID);
   $("#button-container").html('<button id="skip-button" style="float:right;" >SKIP</button>');
 }
+
 $("#roomCode").append(roomID);
 $("#userName").append(username);
 
@@ -55,6 +57,7 @@ socket.on('addUser', function(user) {
 });
 
 socket.on('badRoom', function() {
+  window.onbeforeunload = function() {}
   location.href = '/error?reason=Room no longer exists!';
 });
 
@@ -65,6 +68,7 @@ socket.on('joinInfo', function(seconds, playerState) {
 
 socket.on('nextMedia', function() {
   $('#skip-button').removeClass('skip-button-grey').addClass('skip-button');
+  nextMedia();
 });
 
 socket.on('pauseMedia', function() {
@@ -86,9 +90,16 @@ socket.on('roomClosed', function() {
 });
 
 socket.on('seekTo', function(seconds) {
-  if (mediaSites[0] === "YouTube" && player.getPlayerState() !== 2) {
-    if (Math.abs(player.getCurrentTime() - seconds) > 1) {
-      player.seekTo(seconds, true);
+  if (mediaSites[0] === "YouTube") {
+    if(player) {
+      if( player.getPlayerState() !== 2) {
+        if (Math.abs(player.getCurrentTime() - seconds) > 1) {
+          player.seekTo(seconds, true);
+        }
+      }
+    }
+    else {
+      updateMediaView();
     }
   }
 });
@@ -123,10 +134,10 @@ socket.on('updateActiveUsers', function(usersTemp) {
   updateActiveUsers();
 });
 
-socket.on('updateMediaLists', function(mediaSites, mediaLinks, mediaTitles) {
-  this.mediaSites = mediaSites;
-  this.mediaLinks = mediaLinks;
-  this.mediaTitles = mediaTitles;
+socket.on('updateMediaLists', function(tempMediaSites, tempMediaLinks, tempMediaTitles) {
+  mediaSites = tempMediaSites;
+  mediaLinks = tempMediaLinks;
+  mediaTitles = tempMediaTitles;
 });
 
 socket.on('updateSkipCount', function(skips, skipTarget) {
@@ -144,7 +155,9 @@ var player;
 
 function clearSkips() {
   userSkips = [];
-  updateSkips();
+  $('#skips').empty();
+  $('#skips').append("SKIPS: " + userSkips.length + "/" + Math.ceil((2 / 3) * users.length));
+  socket.emit('updateSkipCount', userSkips.length, Math.ceil((2 / 3) * users.length));
 }
 
 function nextMedia() {
@@ -230,6 +243,9 @@ function updateSkips() {
   console.log(userSkips);
   $('#skips').append("SKIPS: " + userSkips.length + "/" + Math.ceil((2 / 3) * users.length));
   socket.emit('updateSkipCount', userSkips.length, Math.ceil((2 / 3) * users.length));
+  if (userSkips.length !== 0 && userSkips.length >= Math.ceil((2 / 3) * users.length)) {
+    nextMedia();
+  }
 }
 
 function updateMediaView() {
@@ -254,7 +270,19 @@ function updateMediaView() {
       });
       break;
     case "YouTube":
-      //console.log("YouTube");
+      var playerVars;
+      if(isHost) {
+        playerVars= {
+          'iv_load_policy': 3,
+        }
+      }
+      else {
+        playerVars = {
+          'controls': 0,
+          'iv_load_policy': 3,
+          'disablekb': 0
+        }
+      }
       player = new YT.Player('player', {
         width: 854,
         height: 480,
@@ -264,13 +292,13 @@ function updateMediaView() {
           'onReady': onPlayerReady,
           'onStateChange': onPlayerStateChange,
         },
-        playerVars: {
-          'iv_load_policy': 3,
-        }
+        playerVars: playerVars
       });
-      intervalSync = setInterval(function() {
-        socket.emit('seekTo', player.getCurrentTime());
-      }, 500);
+      if(isHost) {
+        intervalSync = setInterval(function() {
+          socket.emit('seekTo', player.getCurrentTime());
+        }, 500);
+      }
       break;
     default:
       document.getElementById('player-container').innerHTML = "<div class='dummy-player-content' id='player'> <div class='spacer' style='clear: both;height:35%' ></div><h2>ADD MEDIA TO THE QUEUE!<br>ROOM CODE: " + roomID + "</h2></div>";

@@ -139,7 +139,6 @@ io.on('connection', function (socket) {
     if(socket.username && roomKeys.indexOf(socket.room)>-1){
       if(socket.username.match(/host:[a-z]{6}/)) {
         if(!socket.connected&&socket.username===tempUser){
-          socket.leave(socket.room);
           var index = roomKeys.indexOf(socket.room);
           if (index > -1) {
             roomKeys.splice(index, 1);
@@ -233,7 +232,6 @@ io.on('connection', function (socket) {
   });
   
   socket.on('skipMedia', function(userID) {
-    console.log(userID);
     socket.broadcast.to(socket.room).emit('skipMedia',userID);
   });
   
