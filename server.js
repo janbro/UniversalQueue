@@ -5,8 +5,7 @@ const express = require('express'),
   http = require('http');
 var app = express();
 
-const hostname = process.env.IP;
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 var roomKeys = [];
 
@@ -25,7 +24,7 @@ app.get('/', function (req, res) {
 });
 
 app.get("/createRoom", function(req, res) {
-  var accessCode = func.generateAccessCode();  
+  var accessCode = func.generateAccessCode();
   roomKeys.push(accessCode);
   res.writeHead(302,
     {
@@ -124,8 +123,8 @@ app.get(/^\/[a-zA-Z0-9\/]*.js$/, function(req, res) {
 var server = http.createServer(app);
 var io = require('socket.io')(server);
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+server.listen(port, () => {
+  //console.log(`Server running at http://${hostname}:${port}/`);
 });
 
 io.on('connection', function (socket) {
@@ -154,7 +153,7 @@ io.on('connection', function (socket) {
       }
     }
   });
-  
+
   socket.on('hostJoin', function (room) {
     if(roomKeys.indexOf(room) != -1) {
       socket.username = "host:"+socket.room;
@@ -166,11 +165,11 @@ io.on('connection', function (socket) {
       socket.emit('badRoom');
     }
   });
-  
+
   socket.on('joinInfo', function(seconds,playerState) {
     socket.broadcast.to(socket.room).emit('joinInfo',seconds,playerState);
   });
-  
+
   socket.on('joinRoom', function (user, room) {
     if(roomKeys.indexOf(room) != -1) {
       socket.username = user;
@@ -183,7 +182,7 @@ io.on('connection', function (socket) {
       socket.emit('badRoom');
     }
   });
-  
+
   socket.on('joinRoomHostView', function (user, room) {
     if(roomKeys.indexOf(room) != -1) {
       socket.username = user;
@@ -196,7 +195,7 @@ io.on('connection', function (socket) {
       socket.emit('badRoom');
     }
   });
-  
+
   socket.on('killRoom', function(room) {
     console.log(room + " has been killed");
     socket.leave(room);
@@ -206,7 +205,7 @@ io.on('connection', function (socket) {
     }
 		socket.leave(socket.room);
   });
-  
+
   socket.on('addMedia', function (mediaSite,mediaLink,mediaTitle) {
     if(roomKeys.indexOf(socket.room) != -1) {
       socket.broadcast.to(socket.room).emit('addMedia',mediaSite,mediaLink,mediaTitle);
@@ -214,35 +213,35 @@ io.on('connection', function (socket) {
       socket.emit('addMedia',mediaSite,mediaLink,mediaTitle);
     }
   });
-  
+
   socket.on('nextMedia', function() {
     socket.broadcast.to(socket.room).emit('nextMedia');
   });
-  
+
   socket.on('pauseMedia', function(room) {
     socket.broadcast.to(socket.room).emit('pauseMedia');
   });
-  
+
   socket.on('playMedia', function() {
     socket.broadcast.to(socket.room).emit('playMedia');
   });
-  
+
   socket.on('seekTo', function(seconds) {
     socket.broadcast.to(socket.room).emit('seekTo',seconds);
   });
-  
+
   socket.on('skipMedia', function(userID) {
     socket.broadcast.to(socket.room).emit('skipMedia',userID);
   });
-  
+
   socket.on('updateActiveUsers', function(users){
     socket.broadcast.to(socket.room).emit('updateActiveUsers',users);
   });
-  
+
   socket.on('updateMediaLists', function(mediaSites,mediaLinks,mediaTitles) {
     socket.broadcast.to(socket.room).emit('updateMediaLists',mediaSites,mediaLinks,mediaTitles);
   });
-  
+
   socket.on('updateSkipCount', function(skips,skipTarget) {
     socket.broadcast.to(socket.room).emit('updateSkipCount',skips,skipTarget);
   });
