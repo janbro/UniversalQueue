@@ -5,7 +5,7 @@ const express = require('express'),
   http = require('http');
 var app = express();
 
-const port = process.env.PORT || 3000;
+const port = 80;
 
 var roomKeys = [];
 
