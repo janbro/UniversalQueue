@@ -33,7 +33,7 @@
         <div class="page-container-host">
             <div class="main-content-host">
                 <h3>Universal Queue</h3>
-                <h6 id="roomCode">Room Code: </h6>
+                <h6>Room Code: <span id="roomCode"></span><br>User: <span id="userName"></span></h6>
                 <hr>
                 <div class="content-container">
                     <div class="media-container">
@@ -44,7 +44,7 @@
                         <div id="skips" style="float:left;">
                             SKIPS: 0/0
                         </div>
-                        <button style="float:right;" onclick="nextMedia()">NEXT</button>
+                        <div id="button-container"></div>
                     </div>
                     <div class="active-users-container">
                         <b>Active Users</b>
