@@ -53,7 +53,7 @@ function search() {
             // $("<p>"+response.result.items[i].snippet.title+"</p>").appendTo('#search-container');
             //document.getElementById('search-container').setAttribute("class","video-container");
             $('#search-container').append('<iframe class="u-full-width" id="player" style="display: block;margin-left: auto;margin-right: auto;" src="https://www.youtube.com/embed/'+response.result.items[i].id.videoId+'?enablejsapi=1" frameborder="0"></iframe>');
-            $('<button class="queue-button" id="queue_track" type="submit" style="float:right;" onclick="sendToQueue(\'YouTube\',\'' +  response.result.items[i].snippet.title.replace(/'/g,"\\'") + '\',\'' + response.result.items[i].id.videoId.replace(/'/g,"\\'") +'\')">Send to Queue</button>').appendTo('#search-container');
+            $('<button class="queue-button" id="queue_track" type="submit" style="float:right;" onclick="sendToQueue(\'YouTube\',\'' +  response.result.items[i].snippet.title.replace(/'/g,"\\'").replace(/"/g,"\\'") + '\',\'' + response.result.items[i].id.videoId.replace(/'/g,"\\'") +'\')">Send to Queue</button>').appendTo('#search-container');
           }
         });
       });
