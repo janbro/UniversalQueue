@@ -5,7 +5,7 @@ Universal Queue is a video/music queuing web application which allows users to c
 
 ## Demo
 
-[https://universal-queue-janbro.c9users.io/](https://universal-queue-janbro.c9users.io/)
+[http://www.universalqueue.me/](http://www.universalqueue.me/)
 
 ## Running the server
 
