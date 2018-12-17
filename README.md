@@ -8,11 +8,12 @@ Universal Queue is a video/music queuing web application which allows users to c
 [http://www.universalqueue.me/](http://www.universalqueue.me/)
 
 ## Running the server
+1) `npm install`
 
-1) Change the port and ip (default is configured for Cloud9)
+2) Change the port and ip (default is configured for Cloud9)
 
-2) Launch the app from the Terminal:
+3) Launch the app from the Terminal:
 
-    $ node server.js
+    `node server.js`
     
 ## Dependencies
